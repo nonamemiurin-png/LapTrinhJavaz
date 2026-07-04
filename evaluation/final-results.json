@@ -1,0 +1,56 @@
+{
+  "status": "completed",
+  "course": "Cấu trúc dữ liệu và Giải thuật",
+  "testSetSize": 50,
+  "rag": {
+    "successfulRequests": 50,
+    "meanTokenF1": 0.4708,
+    "citationHitRate": 0.9778,
+    "refusalAccuracy": 1.0,
+    "meanLatencyMs": 4044,
+    "p50LatencyMs": 2010,
+    "p95LatencyMs": 5911
+  },
+  "fineTuned": {
+    "model": "Qwen2.5-0.5B-Instruct LoRA",
+    "successfulRequests": 50,
+    "meanTokenF1": 0.1364,
+    "refusalAccuracy": 0.0,
+    "meanLatencyMs": 6803,
+    "p50LatencyMs": 2984,
+    "p95LatencyMs": 25709
+  },
+  "training": {
+    "samples": 29,
+    "epochs": 15,
+    "finalLoss": 2.848,
+    "gpu": "NVIDIA GeForce RTX 3050 6GB"
+  },
+  "chunkingBenchmark": {
+    "embeddingModel": "gemini-embedding-001",
+    "answerableQuestions": 45,
+    "topK": 5,
+    "results": [
+      {"strategy": "fixed", "hitAt5": 1.0, "mrr": 0.9130, "ndcgAt5": 0.9352},
+      {"strategy": "semantic", "hitAt5": 1.0, "mrr": 0.9378, "ndcgAt5": 0.9536},
+      {"strategy": "hierarchical", "hitAt5": 1.0, "mrr": 0.9130, "ndcgAt5": 0.9352}
+    ],
+    "bestStrategy": "semantic"
+  },
+  "embeddingBenchmark": {
+    "chunkStrategy": "fixed",
+    "answerableQuestions": 45,
+    "results": [
+      {"model": "multilingual-e5-base", "hitAt5": 1.0, "mrr": 0.9741, "ndcgAt5": 0.9807},
+      {"model": "phobert-base", "hitAt5": 1.0, "mrr": 0.7000, "ndcgAt5": 0.7738},
+      {"model": "bge-m3", "hitAt5": 1.0, "mrr": 0.8833, "ndcgAt5": 0.9130}
+    ],
+    "bestMeasuredModel": "multilingual-e5-base",
+    "openAiStatus": "EXCLUDED_INSUFFICIENT_API_CREDIT"
+  },
+  "provenance": {
+    "ragResult": "evaluation/runs/final-rag-50",
+    "fineTunedResult": "evaluation/runs/20260704-035021",
+    "note": "RAG requests were completed in quota-limited batches using the same model and configuration."
+  }
+}

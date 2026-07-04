@@ -1,0 +1,8 @@
+experiment_id,experiment_type,chunk_strategy,embedding_model,questions,top_k,status,hit_at_5,mrr,ndcg_at_5,notes
+CHUNK_FIXED,chunking,fixed,gemini-embedding-001,45,5,COMPLETED,1.0,0.9130,0.9352,Controlled embedding model
+CHUNK_SEMANTIC,chunking,semantic,gemini-embedding-001,45,5,COMPLETED,1.0,0.9378,0.9536,Best measured chunking strategy
+CHUNK_HIERARCHICAL,chunking,hierarchical,gemini-embedding-001,45,5,COMPLETED,1.0,0.9130,0.9352,Controlled embedding model
+EMBED_E5,embedding,fixed,multilingual-e5-base,45,5,COMPLETED,1.0,0.9741,0.9807,Best measured embedding model
+EMBED_BGE_M3,embedding,fixed,bge-m3,45,5,COMPLETED,1.0,0.8833,0.9130,Free local model
+EMBED_PHOBERT,embedding,fixed,phobert-base-mean-pooling,45,5,COMPLETED,1.0,0.7000,0.7738,Pooling and word segmentation are validity threats
+EMBED_OPENAI,embedding,fixed,text-embedding-3-small,45,5,EXCLUDED,,,,Insufficient OpenAI API credit; replaced in scope by bge-m3

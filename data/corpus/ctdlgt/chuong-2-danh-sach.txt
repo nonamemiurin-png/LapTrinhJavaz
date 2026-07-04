@@ -1,0 +1,12 @@
+MÔN: Cấu trúc dữ liệu và Giải thuật
+CHƯƠNG 2: Mảng và danh sách liên kết
+
+Mảng lưu các phần tử liên tiếp trong bộ nhớ. Truy cập theo chỉ số có O(1). Chèn hoặc xóa ở đầu hay giữa mảng thường O(n) vì phải dịch chuyển phần tử. Mảng có tính locality tốt nên thường tận dụng cache CPU hiệu quả.
+
+Dynamic array quản lý capacity và size. Khi hết capacity, nó cấp phát vùng lớn hơn, thường gấp đôi, rồi sao chép phần tử. Vì vậy append có worst-case O(n) tại lần mở rộng nhưng amortized O(1).
+
+Danh sách liên kết đơn gồm các node chứa dữ liệu và con trỏ next. Truy cập phần tử thứ i là O(n); chèn/xóa đầu danh sách là O(1). Nếu đã có tham chiếu tới node đứng trước vị trí cần thao tác, chèn hoặc xóa tại đó là O(1). Tìm node theo giá trị vẫn là O(n).
+
+Danh sách liên kết đôi có cả prev và next, cho phép duyệt hai chiều và xóa node đã biết trong O(1), đổi lại tốn thêm bộ nhớ. Danh sách vòng nối node cuối về node đầu, thích hợp cho round-robin. Linked list không bảo đảm locality như mảng và mỗi node có overhead con trỏ.
+
+Stack tuân theo LIFO: phần tử vào sau ra trước. Các thao tác push, pop, peek thường O(1). Stack dùng cho undo, kiểm tra ngoặc và DFS. Queue tuân theo FIFO: vào trước ra trước; enqueue và dequeue có thể O(1) với linked list hoặc circular array. Queue dùng cho BFS và lập lịch.

@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: student-chatbot-backend
+  
+  # Database Configurations
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:15432/vector_db}
+    username: ${POSTGRES_USERNAME:tuong}
+    password: ${POSTGRES_PASSWORD:hht9112006}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # Spring AI configuration
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-2.5-flash
+      embedding:
+        options:
+          model: gemini-embedding-001
+          dimensions: 768
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 768
+        initialize-schema: true
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
+
+app:
+  finetuned:
+    endpoint: ${FINE_TUNED_MODEL_ENDPOINT:}
+    model: ${FINE_TUNED_MODEL_NAME:qwen2.5:0.5b}

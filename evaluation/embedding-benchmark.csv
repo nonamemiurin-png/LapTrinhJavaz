@@ -1,0 +1,4 @@
+embedding_model,chunk_strategy,questions,chunks,hit@5,mrr,ndcg@5,duration_seconds
+multilingual-e5-base,fixed,45,5,1.0,0.9741,0.9807,2.81
+phobert-base,fixed,45,5,1.0,0.7000,0.7738,1.94
+bge-m3,fixed,45,5,1.0,0.8833,0.9130,9.12

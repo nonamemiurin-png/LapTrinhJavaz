@@ -1,0 +1,10 @@
+MÔN: Cấu trúc dữ liệu và Giải thuật
+CHƯƠNG 4: Bảng băm
+
+Hash table ánh xạ key thành chỉ số bucket bằng hàm băm. Với hàm băm tốt và load factor được kiểm soát, search, insert và delete có thời gian trung bình O(1), nhưng worst-case O(n).
+
+Collision xảy ra khi hai key ánh xạ vào cùng bucket. Separate chaining lưu một danh sách/cấu trúc phụ tại mỗi bucket. Open addressing giữ mọi phần tử trong chính mảng và thăm dò vị trí khác; các cách phổ biến gồm linear probing, quadratic probing và double hashing.
+
+Load factor alpha = số phần tử / số bucket. Load factor cao làm tăng collision. Rehashing tạo bảng lớn hơn và chèn lại các phần tử; một lần rehash tốn O(n), nhưng chi phí có thể amortize trên nhiều lần insert.
+
+Hàm băm tốt cần tính nhanh và phân bố key tương đối đồng đều. Hash table không duy trì thứ tự key; nếu cần duyệt có thứ tự hoặc truy vấn khoảng, balanced BST thường phù hợp hơn. Với open addressing, xóa thường cần tombstone để không phá vỡ chuỗi thăm dò.

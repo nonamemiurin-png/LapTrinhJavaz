@@ -1,0 +1,14 @@
+MÔN: Cấu trúc dữ liệu và Giải thuật
+CHƯƠNG 5: Đồ thị, tìm kiếm và sắp xếp
+
+Đồ thị G=(V,E) gồm tập đỉnh V và cạnh E. Adjacency matrix dùng O(V^2) bộ nhớ và kiểm tra cạnh O(1), phù hợp đồ thị dày. Adjacency list dùng O(V+E) bộ nhớ, phù hợp đồ thị thưa.
+
+BFS dùng queue, duyệt theo lớp và tìm đường đi ít cạnh nhất trong đồ thị không trọng số; thời gian O(V+E) với adjacency list. DFS dùng stack hoặc đệ quy, hữu ích cho phát hiện chu trình, thành phần liên thông và topological sort; thời gian cũng O(V+E).
+
+Dijkstra tìm đường đi ngắn nhất từ một nguồn khi trọng số cạnh không âm. Với adjacency list và binary heap, thời gian thường O((V+E) log V). Dijkstra không đúng khi có cạnh trọng số âm; Bellman-Ford xử lý được cạnh âm và phát hiện chu trình âm reachable, với O(VE).
+
+Topological sort chỉ tồn tại cho đồ thị có hướng không chu trình (DAG). Có thể thực hiện bằng DFS hoặc thuật toán Kahn dựa trên indegree và queue.
+
+Merge sort chia đôi, sắp xếp hai nửa rồi trộn; thời gian O(n log n), ổn định, thường cần O(n) bộ nhớ phụ cho mảng. Quicksort partition quanh pivot; trung bình O(n log n), worst-case O(n^2), thường in-place và không ổn định. Chọn pivot ngẫu nhiên hoặc median-of-three giảm nguy cơ trường hợp xấu.
+
+Insertion sort có O(n^2) trung bình/xấu nhất nhưng O(n) khi dữ liệu gần sắp xếp, ổn định và phù hợp mảng nhỏ. Counting sort không dựa trên so sánh, chạy O(n+k) với miền khóa nguyên kích thước k và cần thêm O(k) bộ nhớ.

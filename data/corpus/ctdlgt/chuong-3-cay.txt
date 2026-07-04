@@ -1,0 +1,12 @@
+MÔN: Cấu trúc dữ liệu và Giải thuật
+CHƯƠNG 3: Cây và heap
+
+Cây là cấu trúc phân cấp gồm node và cạnh, có một root. Trong cây nhị phân, mỗi node có tối đa hai con. Độ sâu của node là số cạnh từ root tới node; chiều cao của cây là độ dài đường đi dài nhất từ root tới một lá.
+
+Binary Search Tree (BST) thỏa: mọi khóa ở cây con trái nhỏ hơn khóa node, mọi khóa ở cây con phải lớn hơn khóa node (với quy ước khóa phân biệt). Search, insert, delete có O(h), trong đó h là chiều cao. BST cân bằng có h = O(log n); BST lệch có thể h = O(n).
+
+Duyệt inorder của BST cho khóa theo thứ tự tăng dần. Preorder thăm root-trái-phải, hữu ích khi sao chép/serialize cấu trúc. Postorder thăm trái-phải-root, hữu ích khi giải phóng cây hoặc tính biểu thức. Level-order dùng queue và duyệt theo từng mức.
+
+AVL là BST tự cân bằng, với độ lệch chiều cao hai cây con của mọi node không quá 1. Sau insert/delete, AVL dùng phép quay để phục hồi cân bằng, bảo đảm search/insert/delete O(log n).
+
+Binary heap là cây nhị phân hoàn chỉnh thường lưu bằng mảng. Min-heap có khóa cha không lớn hơn khóa con, nên phần tử nhỏ nhất ở root. Peek O(1), insert O(log n), extract-min O(log n). Xây heap từ n phần tử bằng bottom-up heapify có O(n). Heap phù hợp triển khai priority queue nhưng không hỗ trợ tìm một phần tử tùy ý trong O(log n).

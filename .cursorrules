@@ -1,0 +1,45 @@
+# Chatbot AI - System & AI Agent Rules
+
+This file provides context, rules, and constraints for any AI coding agent (Cursor, Copilot, Cline, Windsurf, etc.) working on this project. 
+**CRITICAL: You must read and follow these rules carefully to avoid breaking existing functionality.**
+
+## 1. Tech Stack Overview
+- **Backend:** Java 17, Spring Boot 3.3.4, Spring AI, PostgreSQL (with `pgvector` extension).
+- **Frontend:** Next.js (React), Node.js.
+- **AI Models Supported:** Groq (Llama 3.1 8b) and Google Gemini (Preview models).
+
+## 2. Critical System Rules (DO NOT BREAK)
+
+### A. Gemini API Integration (Native Implementation)
+- **DO NOT** use the default Spring AI `OpenAiChatModel` for Google Gemini. Google's API proxy has a versioning incompatibility (`v1main` vs `v1beta`).
+- **MUST USE** our custom native implementations: `GeminiNativeChatModel` and `GeminiNativeEmbeddingModel`. These classes use `RestTemplate` to call the `generativelanguage.googleapis.com` endpoints natively.
+- **DO NOT** modify the logic in these native classes unless explicitly asked to fix a bug within them.
+
+### B. Supported AI Models (Quota & Access Limits)
+- The current Google API Key uses internal test preview models. 
+- **DO NOT** change the Gemini models to `gemini-1.5-flash`, `gemini-1.5-pro`, or `text-embedding-004` as the key has 0 quota or no access to them.
+- **Always use:** 
+  - Chat: `gemini-robotics-er-1.6-preview`
+  - Embedding: `gemini-embedding-2`
+- For Groq, always use the active model `llama-3.1-8b-instant`. Do not use decommissioned models like `llama3-8b-8192`.
+
+### C. Security & API Keys
+- **NEVER HARDCODE** API keys (Groq API, Gemini API, DB Passwords) directly into code files or `application.yml`. 
+- Always read from environment variables (e.g., `${OPENAI_API_KEY}`).
+- If you need a new API key or secret, instruct the user to add it to their `.env` file.
+
+### D. Vector Database (Postgres & PGVector)
+- The application relies on PostgreSQL with the `pgvector` extension.
+- The `vector_store` table is auto-initialized by Spring AI's `PgVectorStore`.
+- **DO NOT** drop the database or the `vector_store` table unless specifically asked by the user to reset the environment.
+
+## 3. General Coding Principles
+
+- **Architecture:** Keep the Backend strictly separated into `Controller` -> `Service` -> `Repository`. Do not put business logic inside Controllers.
+- **Language:** The user communicates in Vietnamese. Code variables and classes should be in English. User-facing text and documentation should ideally be in Vietnamese unless specified otherwise.
+- **Clean Code:** Keep functions small, modular, and reusable. Format code consistently before making a commit. 
+- **Dependencies:** Do not add heavy or unnecessary dependencies to `pom.xml` or `package.json` without discussing it with the user first.
+
+## 4. Communication Protocol
+- If a task is underspecified, **ASK** the user for clarification before generating large blocks of code.
+- If you encounter an error (like a 404, 400, or 429 API error), refer back to these rules (Section 2) before attempting to rewrite core integration code.

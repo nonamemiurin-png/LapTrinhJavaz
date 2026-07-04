@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  @apply antialiased min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900;
+}
+
+/* Hide Next.js Dev Indicator */
+nextjs-portal,
+[data-nextjs-toast],
+.nextjs-toast,
+#nextjs-route-announcer {
+  display: none !important;
+}
+
+/* Markdown Styles */
+.markdown-content {
+  @apply space-y-3;
+}
+.markdown-content p {
+  @apply leading-relaxed;
+}
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  @apply font-bold text-slate-900 mt-4 mb-2;
+}
+.markdown-content h1 { @apply text-2xl; }
+.markdown-content h2 { @apply text-xl; }
+.markdown-content h3 { @apply text-lg; }
+.markdown-content ul {
+  @apply list-disc list-inside space-y-1 ml-4;
+}
+.markdown-content ol {
+  @apply list-decimal list-inside space-y-1 ml-4;
+}
+.markdown-content a {
+  @apply text-indigo-600 hover:underline;
+}
+.markdown-content code {
+  @apply bg-slate-100 text-pink-600 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+.markdown-content pre {
+  @apply bg-slate-800 text-slate-100 p-4 rounded-xl overflow-x-auto my-4;
+}
+.markdown-content pre code {
+  @apply bg-transparent text-slate-100 p-0 rounded-none;
+}
+.markdown-content blockquote {
+  @apply border-l-4 border-indigo-300 pl-4 italic text-slate-600;
+}

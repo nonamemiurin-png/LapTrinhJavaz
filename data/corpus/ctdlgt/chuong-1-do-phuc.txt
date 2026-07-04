@@ -1,0 +1,10 @@
+MÔN: Cấu trúc dữ liệu và Giải thuật
+CHƯƠNG 1: Độ phức tạp thuật toán
+
+Độ phức tạp thời gian mô tả tốc độ tăng của số phép toán theo kích thước đầu vào n. Ký hiệu Big-O biểu diễn cận trên tiệm cận; Big-Omega biểu diễn cận dưới tiệm cận; Big-Theta biểu diễn cận chặt khi tồn tại cả cận trên và cận dưới cùng bậc.
+
+Một số bậc tăng trưởng thường gặp, từ tốt đến xấu khi n lớn: O(1), O(log n), O(n), O(n log n), O(n^2), O(2^n), O(n!). Khi bỏ hằng số và thành phần bậc thấp, 3n^2 + 5n + 2 thuộc O(n^2).
+
+Phân tích trường hợp tốt nhất, trung bình và xấu nhất có thể cho kết quả khác nhau. Tìm kiếm tuyến tính có thời gian tốt nhất O(1) khi phần tử nằm đầu danh sách và xấu nhất O(n). Tìm kiếm nhị phân có O(log n), nhưng yêu cầu dữ liệu đã sắp xếp và cấu trúc cho phép truy cập phần tử giữa hiệu quả.
+
+Độ phức tạp không gian đo lượng bộ nhớ bổ sung theo n. Thuật toán đệ quy thường dùng stack lời gọi; đệ quy sâu n có thể cần O(n) bộ nhớ stack. Phân tích amortized phân bổ chi phí của thao tác đắt trên một chuỗi thao tác; append vào dynamic array có amortized O(1), dù một lần mở rộng có thể tốn O(n).

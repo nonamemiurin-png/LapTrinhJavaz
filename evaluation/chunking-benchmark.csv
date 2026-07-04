@@ -1,0 +1,4 @@
+﻿chunk_strategy,embedding_model,questions,hit@5,mrr,ndcg@5,duration_seconds
+fixed,gemini-embedding-001,45,1.0,0.913,0.9352,20.2
+semantic,gemini-embedding-001,45,1.0,0.9378,0.9536,87.75
+hierarchical,gemini-embedding-001,45,1.0,0.913,0.9352,88.14
