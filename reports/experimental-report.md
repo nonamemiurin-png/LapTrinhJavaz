@@ -50,9 +50,9 @@ Kết quả thực nghiệm nghiêng rõ về RAG: token F1 cao hơn khoảng 3.
 
 | Faithfulness | Answer relevancy | Context precision | Context recall |
 |---:|---:|---:|---:|
-| Chưa đo đủ | Chưa đo đủ | Chưa đo đủ | Chưa đo đủ |
+| 0.7793 | 0.7123 | 0.4567 | 0.6400 |
 
-Pipeline RAGAS 0.2.15 đã được cấu hình để chấm bằng Gemini trên dữ liệu RAG thật. Các lần chạy thử ngày 04/07/2026 gặp cả giới hạn ngày của key cũ (`20 request/ngày`) và giới hạn tốc độ của key mới (`5 request/phút`) trên `gemini-2.5-flash`. RAGAS cần nhiều request cho mỗi câu nên một số metric bị timeout; kết quả thiếu/NaN không được sử dụng trong báo cáo. Cần chạy lại với project có quota cao hơn; đây là hạng mục thực nghiệm duy nhất còn bị chặn bởi dịch vụ ngoài.
+Do Gemini bị giới hạn quota/kết nối, bảng trên dùng phương án **RAGAS-compatible local semantic fallback** trên đủ 50 câu, với `BAAI/bge-m3` và ngưỡng semantic support 0.55. Faithfulness đo tỷ lệ mệnh đề trong câu trả lời được context hỗ trợ; answer relevancy là cosine similarity giữa câu hỏi và câu trả lời; context precision/recall đo semantic support giữa context truy xuất và ground truth. Đây là phép đo cục bộ có thể tái lập, không được trình bày như kết quả LLM-judge RAGAS chuẩn. Kết quả từng câu nằm tại `evaluation/ragas-benchmark.csv`, summary tại `evaluation/ragas-summary.json`, script tại `scripts/benchmark/run_ragas_local.py`.
 
 ### 3.3 Chunking và embedding
 

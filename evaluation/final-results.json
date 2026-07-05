@@ -48,6 +48,16 @@
     "bestMeasuredModel": "multilingual-e5-base",
     "openAiStatus": "EXCLUDED_INSUFFICIENT_API_CREDIT"
   },
+  "ragas": {
+    "sampleSize": 50,
+    "faithfulness": 0.7793,
+    "answerRelevancy": 0.7123,
+    "contextPrecision": 0.4567,
+    "contextRecall": 0.64,
+    "method": "local-semantic-fallback",
+    "embeddingModel": "BAAI/bge-m3",
+    "supportThreshold": 0.55
+  },
   "provenance": {
     "ragResult": "evaluation/runs/final-rag-50",
     "fineTunedResult": "evaluation/runs/20260704-035021",

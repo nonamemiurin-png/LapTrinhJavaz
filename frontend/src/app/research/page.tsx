@@ -31,6 +31,16 @@ interface BenchmarkSummary {
     openAiStatus: string;
     results: Array<{ model: string; hitAt5: number; mrr: number; ndcgAt5: number }>;
   };
+  ragas?: {
+    sampleSize: number;
+    faithfulness: number;
+    answerRelevancy: number;
+    contextPrecision: number;
+    contextRecall: number;
+    method: string;
+    embeddingModel: string;
+    supportThreshold: number;
+  };
 }
 
 export default function ResearchDashboard() {
@@ -124,6 +134,23 @@ export default function ResearchDashboard() {
                 ))}</tbody>
               </table>
               <p className="text-xs text-amber-600 mt-2">text-embedding-3-small được loại khỏi phạm vi do không có API credit; không sử dụng số liệu mô phỏng.</p>
+            </div>
+          )}
+          {benchmark.ragas && (
+            <div className="mt-5 overflow-x-auto">
+              <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3">RAGAS semantic benchmark</h3>
+              <table className="w-full text-sm">
+                <thead><tr className="text-left text-slate-500 border-b"><th className="py-2">Faithfulness</th><th>Answer relevancy</th><th>Context precision</th><th>Context recall</th></tr></thead>
+                <tbody><tr className="border-b border-slate-100 font-semibold text-emerald-700">
+                  <td className="py-2">{benchmark.ragas.faithfulness.toFixed(4)}</td>
+                  <td>{benchmark.ragas.answerRelevancy.toFixed(4)}</td>
+                  <td>{benchmark.ragas.contextPrecision.toFixed(4)}</td>
+                  <td>{benchmark.ragas.contextRecall.toFixed(4)}</td>
+                </tr></tbody>
+              </table>
+              <p className="text-xs text-slate-500 mt-2">
+                {benchmark.ragas.sampleSize} câu; local semantic fallback bằng {benchmark.ragas.embeddingModel}, ngưỡng {benchmark.ragas.supportThreshold}. Không phải LLM-judge RAGAS chuẩn.
+              </p>
             </div>
           )}
         </section>

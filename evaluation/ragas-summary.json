@@ -1,0 +1,11 @@
+{
+  "faithfulness": 0.7793,
+  "answer_relevancy": 0.7123,
+  "context_precision": 0.4567,
+  "context_recall": 0.64,
+  "sample_size": 50,
+  "method": "local-semantic-fallback",
+  "embedding_model": "BAAI/bge-m3",
+  "support_threshold": 0.55,
+  "note": "RAGAS-compatible dimensions; local semantic judge, not standard LLM-judged RAGAS."
+}
