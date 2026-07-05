@@ -67,6 +67,8 @@ Kết quả cuối cùng cần trả lời liệu RAG hay Fine-tuning phù hợp
 
 ## 1.1. Bối cảnh và lý do chọn đề tài
 
+Đề tài được giảng viên hướng dẫn lựa chọn và phân công cho nhóm trong khuôn khổ học phần Lập trình Java. Nhóm không thực hiện bước tự đề xuất hoặc tự lựa chọn đề tài; nhiệm vụ của nhóm là phân tích yêu cầu, xây dựng sản phẩm và triển khai phần nghiên cứu theo phạm vi được giao.
+
 Sinh viên đại học thường phải tra cứu lượng lớn giáo trình, slide bài giảng, tài liệu thực hành và tài liệu tham khảo. Việc tìm đúng đoạn thông tin trong nhiều tài liệu mất thời gian, trong khi mô hình ngôn ngữ tổng quát có thể trả lời thiếu căn cứ hoặc tạo thông tin không có trong tài liệu môn học. Vì vậy, một chatbot có khả năng hỏi đáp dựa trên nguồn tài liệu xác định sẽ hỗ trợ quá trình tự học và giảm thời gian tra cứu.
 
 RAG và Fine-tuning là hai hướng tiếp cận phổ biến để điều chỉnh chatbot theo miền tri thức. RAG bổ sung tri thức tại thời điểm truy vấn thông qua retrieval, còn Fine-tuning điều chỉnh tham số hoặc adapter của mô hình bằng dữ liệu huấn luyện chuyên biệt. Hai phương pháp có sự khác biệt đáng kể về độ chính xác, chi phí, khả năng cập nhật và yêu cầu vận hành. Việc đánh giá trong ngữ cảnh tài liệu kỹ thuật tiếng Việt có ý nghĩa cả về kỹ thuật lẫn nghiên cứu.
