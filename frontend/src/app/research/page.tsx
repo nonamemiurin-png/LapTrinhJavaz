@@ -123,8 +123,37 @@ export default function ResearchDashboard() {
             </div>
           )}
           {benchmark.embeddingBenchmark && (
-            <div className="mt-5 overflow-x-auto">
-              <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-3">So sánh embedding model</h3>
+            <div className="mt-6 border-t border-slate-200 dark:border-slate-700 pt-5">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">So sánh 3 embedding model</h3>
+                  <p className="text-xs text-slate-500 mt-1">Cùng fixed chunking, cùng 45 câu answerable và cùng top-k.</p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-cyan-100 text-cyan-700 text-xs font-bold">
+                  {benchmark.embeddingBenchmark.results.length} MODELS
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+                {benchmark.embeddingBenchmark.results.map(item => {
+                  const isBest = item.model === benchmark.embeddingBenchmark?.bestMeasuredModel;
+                  return (
+                    <div key={`card-${item.model}`} className={`rounded-2xl border p-4 ${isBest ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-950/20" : "border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-900/40"}`}>
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <p className="font-bold text-sm text-slate-800 dark:text-slate-100 break-all">{item.model}</p>
+                        {isBest && <span className="text-[10px] px-2 py-1 rounded-full bg-emerald-500 text-white font-bold">TỐT NHẤT</span>}
+                      </div>
+                      <dl className="space-y-2 text-xs">
+                        <div className="flex justify-between"><dt className="text-slate-500">Hit@5</dt><dd className="font-mono font-semibold">{item.hitAt5.toFixed(4)}</dd></div>
+                        <div className="flex justify-between"><dt className="text-slate-500">MRR</dt><dd className="font-mono font-semibold">{item.mrr.toFixed(4)}</dd></div>
+                        <div className="flex justify-between"><dt className="text-slate-500">nDCG@5</dt><dd className="font-mono font-semibold">{item.ndcgAt5.toFixed(4)}</dd></div>
+                      </dl>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-left text-slate-500 border-b"><th className="py-2">Model</th><th>Hit@5</th><th>MRR</th><th>nDCG@5</th></tr></thead>
                 <tbody>{benchmark.embeddingBenchmark.results.map(item => (
@@ -133,6 +162,7 @@ export default function ResearchDashboard() {
                   </tr>
                 ))}</tbody>
               </table>
+              </div>
               <p className="text-xs text-amber-600 mt-2">text-embedding-3-small được loại khỏi phạm vi do không có API credit; không sử dụng số liệu mô phỏng.</p>
             </div>
           )}
