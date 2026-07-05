@@ -403,7 +403,7 @@ Các khoảng trống cần hoàn thiện:
 
 ## 5.4. Module nghiên cứu
 
-Trang Research cung cấp giao diện A/B Testing và biểu đồ latency. Source frontend hiện gọi endpoint evaluation nhưng backend tương ứng chưa được xác minh. Giao diện benchmark chunking và embedding được ghi nhận theo yêu cầu và demo của thành viên; nhóm cần commit implementation cuối trước khi nghiệm thu.
+Trang Research cung cấp A/B Testing qua `/api/evaluate/compare`, kết quả LLM-as-a-judge và dashboard batch 50 câu. Dashboard đọc `frontend/public/benchmark-summary.json` để hiển thị RAG/fine-tuned, ba chunking strategies, ba embedding models và RAGAS local semantic fallback. Backend, local model và endpoint evaluation đã được kiểm thử end-to-end.
 
 ## 5.5. Xác thực và cấu hình bí mật
 
@@ -429,9 +429,9 @@ Backend đọc Gemini key từ biến môi trường; tuyệt đối không ghi 
 | Môn học | Lập trình Java / _nhóm xác nhận tên cuối_ |
 | Ngôn ngữ | Tiếng Việt, có thuật ngữ kỹ thuật tiếng Anh |
 | Định dạng | PDF, DOCX, PPTX |
-| Số tài liệu | _Nhóm bổ sung_ |
-| Số chương | _Nhóm bổ sung_ |
-| Tổng số chunks | _Nhóm bổ sung theo từng strategy_ |
+| Số tài liệu demo đã index | 5 |
+| Số chương | 5 |
+| Tổng số chunks trong lần smoke test | 14 |
 
 ## 6.2. Test set
 
@@ -503,56 +503,96 @@ Backend đọc Gemini key từ biến môi trường; tuyệt đối không ghi 
 
 # VII. KẾT QUẢ VÀ THẢO LUẬN
 
-> Chương này là form tổng hợp. Nhóm chỉ điền số liệu đã chạy và có file kết quả tương ứng.
+Kết quả trong chương này được tổng hợp từ `evaluation/final-results.json`,
+`evaluation/runs/final-comparison.json`, các file CSV benchmark và test set 50
+câu. Không sử dụng số liệu mô phỏng cho model bị thiếu API credit.
 
 ## 7.1. RAG so với Fine-tuned model
 
 | Metric | RAG | Fine-tuned | Nhận xét |
 |---|---:|---:|---|
-| Token F1 |  |  |  |
-| Refusal accuracy |  |  |  |
-| Citation hit rate |  | Không áp dụng |  |
-| Mean latency (ms) |  |  |  |
-| p95 latency (ms) |  |  |  |
-| Chi phí |  |  |  |
-| Thời gian cập nhật kiến thức |  |  |  |
+| Token F1 | **0.4708** | 0.1364 | RAG cao hơn khoảng 3.45 lần |
+| Refusal accuracy | **1.0000** | 0.0000 | RAG từ chối đúng 5/5 câu ngoài phạm vi |
+| Citation hit rate | **0.9778** | Không áp dụng | RAG trích đúng nguồn ở phần lớn câu answerable |
+| Mean latency (ms) | **4,044** | 6,803 | RAG nhanh hơn trong môi trường đo hiện tại |
+| p50 latency (ms) | **2,010** | 2,984 | RAG thấp hơn 974 ms |
+| p95 latency (ms) | **5,911** | 25,709 | Fine-tuned có tail latency lớn do chạy local |
+| Request thành công | 50/50 | 50/50 | Hai pipeline dùng cùng test set |
+| Chi phí vận hành | API Gemini + re-index | GPU train + local inference | Chưa quy đổi thành tiền tuyệt đối |
+| Cập nhật kiến thức | Upload/re-index tài liệu | Chuẩn bị dữ liệu và train lại adapter | RAG linh hoạt hơn |
+
+RAG vượt trội về F1, khả năng kiểm soát câu ngoài phạm vi và citation. Fine-tuned
+model dùng Qwen2.5-0.5B-Instruct LoRA được train trên 29 mẫu, 15 epochs, final
+loss 2.848 với RTX 3050 6GB. Quy mô model/dataset nhỏ là nguyên nhân quan trọng
+khi diễn giải khoảng cách chất lượng; kết quả không chứng minh mọi mô hình
+fine-tuned đều kém RAG.
 
 ## 7.2. Benchmark chunking
 
-| Strategy | Hit@5 | MRR | nDCG@5 | Số chunks | Latency |
+| Strategy | Questions | Hit@5 | MRR | nDCG@5 | Duration (s) |
 |---|---:|---:|---:|---:|---:|
-| Fixed-size |  |  |  |  |  |
-| Semantic |  |  |  |  |  |
-| Hierarchical |  |  |  |  |  |
+| Fixed-size | 45 | 1.0000 | 0.9130 | 0.9352 | **20.20** |
+| Semantic | 45 | 1.0000 | **0.9378** | **0.9536** | 87.75 |
+| Hierarchical | 45 | 1.0000 | 0.9130 | 0.9352 | 88.14 |
+
+Cả ba strategy đều đạt Hit@5 bằng 1.0 nên metric này đã bão hòa trên corpus nhỏ.
+Semantic xếp đúng evidence lên vị trí cao hơn, thể hiện qua MRR và nDCG@5 tốt
+nhất. Fixed-size nhanh hơn khoảng 4.3 lần và là lựa chọn phù hợp khi ưu tiên chi
+phí/tốc độ; semantic phù hợp khi ưu tiên chất lượng thứ hạng retrieval.
 
 ## 7.3. Benchmark embedding
 
-| Model | Hit@5 | MRR | nDCG@5 | Latency | Chi phí |
-|---|---:|---:|---:|---:|---|
-| multilingual-e5-base |  |  |  |  | Local |
-| PhoBERT-base |  |  |  |  | Local |
-| BGE-M3 |  |  |  |  | Local |
-| text-embedding-3-small |  |  |  |  | API |
+| Model | Questions | Hit@5 | MRR | nDCG@5 | Duration (s) | Trạng thái |
+|---|---:|---:|---:|---:|---:|---|
+| multilingual-e5-base | 45 | 1.0000 | **0.9741** | **0.9807** | 2.81 | Đã đo |
+| PhoBERT-base | 45 | 1.0000 | 0.7000 | 0.7738 | **1.94** | Đã đo |
+| BGE-M3 | 45 | 1.0000 | 0.8833 | 0.9130 | 9.12 | Đã đo |
+| text-embedding-3-small | — | — | — | — | — | Loại: không có API credit |
+
+multilingual-e5-base đạt chất lượng thứ hạng cao nhất. BGE-M3 đứng thứ hai nhưng
+chậm hơn trong lần chạy này. PhoBERT nhanh nhất nhưng MRR/nDCG thấp nhất; model
+này không phải sentence embedding model mặc định và kết quả phụ thuộc cách mean
+pooling/word segmentation.
 
 ## 7.4. RAGAS
 
 | Faithfulness | Answer relevancy | Context precision | Context recall | Judge/Method | Sample size |
 |---:|---:|---:|---:|---|---:|
-|  |  |  |  |  |  |
+| **0.7793** | **0.7123** | **0.4567** | **0.6400** | Local semantic fallback, BAAI/bge-m3, threshold 0.55 | 50 |
+
+Đây là RAGAS-compatible local semantic fallback do quota/kết nối Gemini, không
+phải RAGAS LLM-judge chuẩn. Faithfulness khá tốt nhưng context precision thấp
+hơn các metric khác, cho thấy retrieval còn đưa vào context dư thừa. File từng
+câu nằm tại `evaluation/ragas-benchmark.csv`; summary nằm tại
+`evaluation/ragas-summary.json`.
 
 ## 7.5. Trả lời câu hỏi nghiên cứu
 
 ### RQ chính
 
-_Nhóm bổ sung kết luận dựa trên accuracy, cost và updateability._
+Trong phạm vi chatbot hỗ trợ môn Cấu trúc dữ liệu và Giải thuật bằng tiếng Việt,
+**RAG hiệu quả hơn fine-tuning**. RAG đạt F1 cao hơn 3.45 lần, refusal accuracy
+1.0, citation hit 0.9778 và latency tốt hơn. Khi tài liệu thay đổi, RAG chỉ cần
+upload/re-index; fine-tuning phải tạo lại dữ liệu và train adapter. Fine-tuned
+local tránh chi phí API khi inference nhưng phát sinh chi phí GPU, vận hành model
+và chất lượng hiện thấp do model/dataset nhỏ. Vì vậy RAG phù hợp làm giải pháp
+chính; fine-tuning phù hợp để thử nghiệm phong cách/hành vi chuyên biệt hoặc kết
+hợp với RAG sau này.
 
 ### RQ phụ 1
 
-_Nhóm bổ sung strategy tốt nhất và giải thích dựa trên retrieval metrics._
+**Semantic chunking cho retrieval ranking tốt nhất**, với MRR 0.9378 và nDCG@5
+0.9536. Fixed và hierarchical cùng đạt MRR 0.9130, nDCG@5 0.9352. Tuy nhiên
+fixed-size chỉ mất 20.20 giây so với gần 88 giây; nếu ưu tiên tốc độ và corpus
+đơn giản, fixed-size có trade-off hợp lý.
 
 ### RQ phụ 2
 
-_Nhóm bổ sung embedding model phù hợp nhất và nêu trade-off._
+**multilingual-e5-base phù hợp nhất trong ba model miễn phí đã đo**, đạt MRR
+0.9741 và nDCG@5 0.9807. BGE-M3 đứng thứ hai (MRR 0.8833), còn PhoBERT thấp hơn
+do không được thiết kế trực tiếp cho sentence embedding nếu chưa xử lý pooling
+và word segmentation chuyên biệt. Không kết luận về text-embedding-3-small vì
+model này bị loại do thiếu API credit.
 
 ## 7.6. Threats to validity
 
@@ -562,6 +602,14 @@ _Nhóm bổ sung embedding model phù hợp nhất và nêu trade-off._
 - API quota/rate limit có thể ảnh hưởng latency và số mẫu RAGAS.
 - PhoBERT không phải sentence embedding model mặc định; pooling và word segmentation ảnh hưởng kết quả.
 - Cần tránh dùng cùng câu hỏi cho cả training và testing.
+- Ground truth hiện có reviewer/status là `Codex-draft`/`DRAFT`; cần con người
+  đọc tài liệu và duyệt lại trước khi dùng làm kết quả học thuật chính thức.
+- Hit@5 bằng 1.0 ở mọi cấu hình cho thấy corpus/test set nhỏ làm metric bão hòa;
+  MRR và nDCG@5 có giá trị phân biệt cao hơn.
+- Latency phụ thuộc mạng, quota Gemini, CPU/GPU và trạng thái warm-up; các duration
+  hiện là kết quả của môi trường chạy cụ thể, chưa có confidence interval.
+- RAG được chạy thành nhiều batch do quota nhưng giữ nguyên model/cấu hình; điều
+  này vẫn có thể tạo nhiễu thời gian giữa các batch.
 
 ---
 
@@ -569,18 +617,47 @@ _Nhóm bổ sung embedding model phù hợp nhất và nêu trade-off._
 
 ## 8.1. Kế hoạch kiểm thử
 
-| Mã test | Chức năng | Kết quả mong đợi | Trạng thái |
+### 8.1.1. Test set đánh giá chatbot
+
+`evaluation/test-set.csv` gồm 50 câu: 45 câu answerable và 5 câu ngoài phạm vi.
+
+| Nhóm câu hỏi | Số lượng |
+|---|---:|
+| Fact | 20 |
+| Definition | 9 |
+| Reasoning | 8 |
+| Comparison | 6 |
+| Out-of-scope | 5 |
+| Application | 1 |
+| Multi-context | 1 |
+
+Phân bố theo nội dung: Chương 1 có 8 câu, Chương 2 có 10, Chương 3 có 12,
+Chương 4 có 7, Chương 5 có 8 và ngoài phạm vi có 5. Mỗi dòng có question,
+ground truth, evidence document/section, question type và answerable flag. Hiện
+50 dòng vẫn mang trạng thái `DRAFT`, do đó cần human review trước khi nộp chính thức.
+Danh sách đầy đủ 50 test case và ground truth được bàn giao dưới dạng CSV tại
+`evaluation/test-set.csv` để có thể chạy tự động; báo cáo không lặp lại toàn bộ
+50 dòng nhằm tránh sai lệch giữa tài liệu và nguồn dữ liệu chuẩn.
+
+### 8.1.2. Kết quả test kỹ thuật
+
+| Mã test | Chức năng/kịch bản | Kết quả thực tế | Trạng thái |
 |---|---|---|---|
-| TC-01 | Đăng nhập Google | Tạo session người dùng thành công |  |
-| TC-02 | Upload PDF | Trạng thái chuyển thành INDEXED |  |
-| TC-03 | Upload DOCX/PPTX | Nội dung được parse và index |  |
-| TC-04 | Danh sách tài liệu | Hiển thị đúng metadata |  |
-| TC-05 | Xóa tài liệu | Metadata và vector được xóa |  |
-| TC-06 | RAG answerable | Trả lời đúng và có nguồn |  |
-| TC-07 | RAG unanswerable | Từ chối đúng mẫu |  |
-| TC-08 | Session history | Tải đúng thứ tự USER/BOT |  |
-| TC-09 | Fine-tuned endpoint | Nhận response hoặc lỗi cấu hình rõ ràng |  |
-| TC-10 | Research dashboard | Hiển thị dữ liệu benchmark hợp lệ |  |
+| TC-01 | Maven unit tests | 5/5 pass: DocumentController 2, ChunkingService 3 | PASS |
+| TC-02 | Frontend production build | Next.js compile, TypeScript và 7 routes thành công | PASS |
+| TC-03 | PostgreSQL/PGVector | Container chạy, vector_store có dữ liệu | PASS |
+| TC-04 | Health và danh sách tài liệu | `/api/health` và `/api/documents` trả HTTP 200 | PASS |
+| TC-05 | RAG answerable | Trả lời BST đúng, có source và 3 citations | PASS |
+| TC-06 | RAG không có context | Trả câu từ chối cố định, không bịa thông tin | PASS |
+| TC-07 | Session history | Ghi/đọc USER và ASSISTANT theo session | PASS |
+| TC-08 | Fine-tuned API | Qwen + LoRA load trên CPU và sinh response | PASS |
+| TC-09 | A/B + LLM judge | `valid_experiment=true`, trả hai answer và điểm judge | PASS |
+| TC-10 | Batch RAG/fine-tuned | 50/50 request thành công ở cả hai pipeline | PASS |
+| TC-11 | RAGAS artifact | 50 dòng, metric hợp lệ trong khoảng 0–1 | PASS |
+| TC-12 | Dashboard embedding | Hiển thị E5, PhoBERT và BGE-M3 | PASS |
+| TC-13 | Google OAuth tương tác | Cần kiểm thử lại sau khi rotate Client Secret | PENDING |
+| TC-14 | Upload PDF/DOCX/PPTX thật | Code hỗ trợ; chưa có biên bản test đủ ba định dạng | PENDING |
+| TC-15 | Xóa/reindex tài liệu end-to-end | Có API/unit coverage; cần test thủ công trước demo | PARTIAL |
 
 ## 8.2. Yêu cầu môi trường
 
@@ -601,9 +678,8 @@ docker compose ps
 ## 8.4. Khởi động backend
 
 ```powershell
-cd backend
-$env:OPENAI_API_KEY="GEMINI_API_KEY_CUA_BAN"
-mvn spring-boot:run
+$env:GEMINI_API_KEY="GEMINI_API_KEY_CUA_BAN"
+.\run-backend.cmd
 ```
 
 Backend mặc định: `http://localhost:8080`.
@@ -622,15 +698,36 @@ Frontend mặc định: `http://localhost:3000`.
 
 ## 8.6. Cấu hình local model
 
-Khởi động local API theo hướng dẫn của module fine-tuning, sau đó cấu hình endpoint tương ứng trên giao diện. Nhóm phải xác nhận port và payload cuối cùng trước khi nộp báo cáo.
+Từ thư mục gốc chạy `run-finetuned.cmd`. API mặc định ở
+`http://localhost:8001/api/generate`; kiểm tra `/health` trả `UP` trước khi chạy
+A/B. Backend dùng `FINE_TUNED_MODEL_ENDPOINT` để kết nối endpoint này.
 
 ## 8.7. Các lỗi đã ghi nhận khi rà soát
 
-- Maven có thể lỗi PKIX khi tải dependency từ Spring Milestones.
-- Frontend build có thể lỗi nếu không tải được Google Font.
-- Source từng thiếu `ChunkingStrategy.java` dù các implementation tham chiếu interface này.
-- UI Research mong đợi endpoint evaluation chưa được xác minh trong backend.
-- Cấu hình embedding và số chiều PGVector cần được kiểm tra đồng nhất.
+- Lỗi PKIX khi Avast quét HTTPS đã được xử lý trong `run-backend.cmd` bằng
+  Windows certificate store, vẫn giữ xác minh TLS.
+- Fine-tuned model từng lỗi PEFT/meta-device; API đã chuyển sang tải toàn bộ
+  Qwen 0.5B bằng float32 trên CPU khi không có CUDA.
+- Gemini LLM judge từng trả HTTP 400 vì request chỉ có system message; prompt đã
+  chuyển thành user message.
+- PGVector và Gemini embedding hiện thống nhất 768 dimensions.
+- `frontend/.env.local` chứa OAuth secret và bị Git ignore. Secret từng xuất
+  hiện trong ảnh chụp phải được rotate trước khi demo.
+- Hai kiểm thử còn thiếu bằng chứng đầy đủ là OAuth tương tác và upload thủ công
+  đủ PDF/DOCX/PPTX.
+
+## 8.8. Truy vết artifact kiểm thử
+
+| Artifact | Nội dung |
+|---|---|
+| `evaluation/test-set.csv` | 50 câu hỏi, ground truth và evidence |
+| `evaluation/final-results.json` | Summary RAG, fine-tuned, chunking, embedding, RAGAS |
+| `evaluation/runs/final-comparison.json` | So sánh RAG/fine-tuned 50 câu |
+| `evaluation/chunking-benchmark.csv` | Retrieval metric của 3 strategies |
+| `evaluation/embedding-benchmark.csv` | Retrieval metric của 3 embedding models |
+| `evaluation/ragas-benchmark.csv` | Metric từng câu |
+| `frontend/public/benchmark-summary.json` | Dữ liệu dashboard |
+| `reports/experimental-report.md` | Báo cáo thực nghiệm chi tiết |
 
 ---
 
