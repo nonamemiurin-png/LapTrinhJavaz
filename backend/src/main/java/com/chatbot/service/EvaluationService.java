@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -36,8 +36,11 @@ public class EvaluationService {
     public String evaluateAndScore(String question, String ragAnswer, String ftAnswer) {
         log.info("Evaluating responses for question: {}", question);
 
-        SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(JUDGE_PROMPT);
-        Prompt prompt = systemPromptTemplate.create(Map.of(
+        // Gemini's OpenAI-compatible endpoint rejects requests containing only
+        // a system message. A PromptTemplate produces the required user
+        // message while preserving the same judge instructions.
+        PromptTemplate promptTemplate = new PromptTemplate(JUDGE_PROMPT);
+        Prompt prompt = promptTemplate.create(Map.of(
                 "question", question,
                 "rag_answer", ragAnswer,
                 "ft_answer", ftAnswer

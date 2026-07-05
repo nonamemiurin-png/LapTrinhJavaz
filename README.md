@@ -1,12 +1,14 @@
 # Chatbot AI Education 🤖📚
 
-> Trạng thái: prototype. Xem [rà soát yêu cầu và kế hoạch thực nghiệm](docs/AUDIT_AND_RESEARCH_PLAN.md) trước khi dùng số liệu để viết kết luận nghiên cứu.
+> Trạng thái: web app và bộ benchmark 50 câu đã hoàn thiện cho phạm vi demo. RAGAS hiện dùng local semantic fallback; xem [báo cáo thực nghiệm](reports/experimental-report.md) trước khi diễn giải kết quả.
 
 Hệ thống Trợ lý Hỏi đáp thông minh dành cho giáo dục, hỗ trợ sinh viên với khả năng truy xuất tài liệu (RAG Mode) và sử dụng kiến thức nội tại của LLM (Fine-Tuning Mode).
 
-Dự án này bao gồm hai phần:
+Dự án này bao gồm bốn phần:
 - **Backend:** Java Spring Boot, Spring AI, PostgreSQL (PGVector).
 - **Frontend:** Next.js (React), Tailwind CSS.
+- **Fine-tuning:** Qwen2.5-0.5B-Instruct với PEFT/LoRA và FastAPI local.
+- **Evaluation:** test set 50 câu, RAGAS, benchmark chunking/embedding và dashboard RBL.
 
 ---
 
@@ -27,13 +29,13 @@ Hệ thống lưu trữ dữ liệu và vector của tài liệu vào PostgreSQL
    ```bash
    docker-compose up -d
    ```
-   *(Đợi Docker kéo image về và khởi chạy container `rag_db` trên port `5432`)*.
-3. Database `rag_db` và Extension `vector` sẽ tự động được tạo và cấu hình.
+   *(Đợi Docker kéo image về và khởi chạy PostgreSQL/PGVector trên port `15432`)*.
+3. Database `vector_db` và extension `vector` sẽ tự động được tạo và cấu hình.
 
 ### 3. Thiết lập API Key (Bảo mật)
 Dự án sử dụng Gemini (Google) cho RAG và một endpoint Qwen cục bộ cho chế độ fine-tuned. Không hard-code API key vào source code.
 1. Tạo các biến môi trường (Environment Variables) trên hệ điều hành của bạn, hoặc thêm vào cấu hình chạy của IDE (IntelliJ, Eclipse, VSCode):
-   - `OPENAI_API_KEY`: Điền API Key của Google Gemini vào đây.
+   - `GEMINI_API_KEY`: Điền API Key của Google Gemini vào đây. `OPENAI_API_KEY` chỉ được giữ để tương thích cấu hình cũ.
    - `FINE_TUNED_MODEL_ENDPOINT`: URL sinh văn bản của local model, mặc định khi chạy module kèm theo là `http://localhost:8001/api/generate`.
    - `FINE_TUNED_MODEL_NAME`: Tên checkpoint để ghi nhận trong thực nghiệm, ví dụ `qwen2.5-0.5b-ctdlgt`.
 2. Spring Boot sẽ tự động đọc các biến môi trường này vào `application.yml` khi ứng dụng khởi chạy.
@@ -57,11 +59,11 @@ Dự án sử dụng Gemini (Google) cho RAG và một endpoint Qwen cục bộ 
    ```
 3. Cài đặt các thư viện cần thiết (Chỉ cần chạy lần đầu):
    ```bash
-   npm install
+   npm.cmd install
    ```
 4. Khởi chạy ứng dụng Frontend:
    ```bash
-   npm run dev
+   npm.cmd run dev
    ```
 5. Mở trình duyệt và truy cập: **http://localhost:3000** để trải nghiệm ứng dụng.
 
@@ -103,14 +105,33 @@ Mẫu báo cáo nằm tại `reports/experimental-report.md`. Chỉ điền kế
 ---
 
 ## 🛠 Cấu trúc dự án
-- `/backend`: Mã nguồn Spring Boot, xử lý API, RAG, nhúng Vector và kết nối LLM.
-  - Tích hợp Native Gemini API (sử dụng Model: `gemini-robotics-er-1.6-preview` & `gemini-embedding-2`).
-  - Tích hợp Groq API (sử dụng Model: `llama-3.1-8b-instant`).
+- `/backend`: Mã nguồn Spring Boot, RAG, Gemini 2.5 Flash, Gemini Embedding và PGVector.
 - `/frontend`: Mã nguồn giao diện Next.js, hiển thị Chat UI, Quản lý tài liệu và Đánh giá Model.
-- `/scripts`: Các script Python hỗ trợ huấn luyện dữ liệu nội bộ (Local Fine-Tuning).
+- `/finetuning`: Train/serve Qwen local bằng LoRA.
+- `/evaluation`: Test set và kết quả benchmark đã version hóa.
+- `/scripts/benchmark`: Các runner RAG, RAGAS, chunking và embedding.
+- `/docs`: Báo cáo nhóm, sequence diagram và hướng dẫn Windows.
 - `.cursorrules`: Cấu hình nguyên tắc lập trình cho AI Agent (như Cursor/Copilot) để không làm vỡ kiến trúc code.
 
 ---
 
 ## 📝 Lưu ý quan trọng cho Developers & AI Agents
 Dự án này đã thiết lập file `.cursorrules` ở thư mục gốc. **Tuyệt đối không được xoá** và khi nếu dùng AI để coding, AI đó sẽ tự động tuân thủ các quy tắc bảo vệ cấu trúc này (VD: Không phá lớp tích hợp Native Gemini, không hard-code API Keys).
+
+## Tài liệu dự án
+
+- [Báo cáo nhóm](docs/Nhóm%20Lập%20Trình%20Java.md)
+- [Sequence diagrams](docs/sequence-diagrams.drawio)
+- [Hướng dẫn chạy Windows](docs/RUN_WINDOWS.md)
+- [Kế hoạch và rà soát nghiên cứu](docs/AUDIT_AND_RESEARCH_PLAN.md)
+- [Báo cáo thực nghiệm](reports/experimental-report.md)
+
+## Thành viên và đóng góp
+
+| Thành viên | Hạng mục phụ trách | GitHub |
+|---|---|---|
+| Đỗ Thiên Phúc | Backend Engineer | [ilymeowmeow](https://github.com/ilymeowmeow) |
+| Huỳnh Thành Phát | AI/Backend Lead | [thanhphatblue2104-glitch](https://github.com/thanhphatblue2104-glitch) |
+| Huỳnh Lê Bảo Trâm | Frontend Engineer | [nonamemiurin-png](https://github.com/nonamemiurin-png) |
+| Hà Hữu Tường | Backend Engineer | [tuonghh2477-dot](https://github.com/tuonghh2477-dot) |
+| Dương Đình Khôi | Frontend Engineer | [khoidd1318-247](https://github.com/khoidd1318-247) |

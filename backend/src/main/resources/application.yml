@@ -23,7 +23,9 @@ spring:
   # Spring AI configuration
   ai:
     openai:
-      api-key: ${OPENAI_API_KEY:}
+      # This is Gemini's OpenAI-compatible endpoint. Prefer a clearly named
+      # Gemini key while retaining the old variable for compatibility.
+      api-key: ${GEMINI_API_KEY:${OPENAI_API_KEY:}}
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:
