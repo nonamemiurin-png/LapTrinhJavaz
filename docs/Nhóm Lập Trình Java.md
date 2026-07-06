@@ -16,6 +16,7 @@
 | Cơ sở dữ liệu | PostgreSQL và PGVector |
 | Repository | <https://github.com/ilymeowmeow/LapTrinhJava> |
 | Giảng viên hướng dẫn | Nguyễn Văn Chiến |
+| Nguồn đề tài | Do giảng viên hướng dẫn phân công cho nhóm |
 | Mã đồ án | 012012213605 |
 | Học kỳ/Năm học | 2/2026 |
 
@@ -65,9 +66,12 @@ Kết quả cuối cùng cần trả lời liệu RAG hay Fine-tuning phù hợp
 
 # I. GIỚI THIỆU ĐỀ TÀI
 
-## 1.1. Bối cảnh và lý do chọn đề tài
+## 1.1. Bối cảnh và nguồn đề tài
 
-Đề tài được giảng viên hướng dẫn lựa chọn và phân công cho nhóm trong khuôn khổ học phần Lập trình Java. Nhóm không thực hiện bước tự đề xuất hoặc tự lựa chọn đề tài; nhiệm vụ của nhóm là phân tích yêu cầu, xây dựng sản phẩm và triển khai phần nghiên cứu theo phạm vi được giao.
+Đề tài do giảng viên hướng dẫn phân công trong khuôn khổ học phần Lập trình
+Java; nhóm không thực hiện bước tự đề xuất hoặc tự lựa chọn đề tài. Từ yêu cầu
+được giao, nhóm tiến hành phân tích, xây dựng web application và thiết kế phần
+thực nghiệm so sánh RAG với Fine-tuning.
 
 Sinh viên đại học thường phải tra cứu lượng lớn giáo trình, slide bài giảng, tài liệu thực hành và tài liệu tham khảo. Việc tìm đúng đoạn thông tin trong nhiều tài liệu mất thời gian, trong khi mô hình ngôn ngữ tổng quát có thể trả lời thiếu căn cứ hoặc tạo thông tin không có trong tài liệu môn học. Vì vậy, một chatbot có khả năng hỏi đáp dựa trên nguồn tài liệu xác định sẽ hỗ trợ quá trình tự học và giảm thời gian tra cứu.
 
@@ -85,7 +89,7 @@ Xây dựng một web application chatbot hỗ trợ sinh viên hỏi đáp theo
 - Giới hạn câu trả lời RAG trong phạm vi tài liệu và hỗ trợ trích dẫn nguồn.
 - Lưu lịch sử hội thoại theo phiên.
 - Tích hợp mô hình fine-tuned chạy cục bộ để so sánh với RAG.
-- Chuẩn bị test set 50 câu hỏi cùng ground truth do con người rà soát.
+- Xây dựng và rà soát test set 50 câu hỏi cùng ground truth.
 - Đánh giá các chiến lược chunking và embedding model.
 - Tổng hợp số liệu, phân tích chi phí và trả lời các câu hỏi nghiên cứu.
 
@@ -106,9 +110,11 @@ Embedding model nào trong multilingual-e5, PhoBERT, BGE-M3 và OpenAI embedding
 ## 1.5. Đối tượng và phạm vi nghiên cứu
 
 - **Đối tượng sử dụng:** sinh viên và giảng viên.
-- **Miền demo:** một môn học thuộc ngành Công nghệ thông tin; báo cáo hiện định hướng nội dung Lập trình Java.
+- **Miền demo:** môn Cấu trúc dữ liệu và Giải thuật (CTDL&GT).
 - **Ngôn ngữ:** câu hỏi, tài liệu và câu trả lời chủ yếu bằng tiếng Việt.
-- **Dữ liệu:** tài liệu học tập hợp pháp do nhóm chuẩn bị; test set 50 câu có ground truth.
+- **Dữ liệu:** nhóm tự xây dựng corpus demo CTDL&GT gồm 5 chương dạng TXT và
+  test set 50 câu có ground truth. Đây là dữ liệu nội bộ phục vụ demo/thực
+  nghiệm, không phải bộ tài liệu chính thức do giảng viên cung cấp.
 - **Mô hình:** Gemini cho RAG và mô hình nguồn mở fine-tuned chạy local khi khả dụng.
 - **Giới hạn:** đồ án không thay thế giảng viên và không bảo đảm câu trả lời luôn đúng tuyệt đối.
 
@@ -428,9 +434,9 @@ Backend đọc Gemini key từ biến môi trường; tuyệt đối không ghi 
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Môn học | Lập trình Java / _nhóm xác nhận tên cuối_ |
+| Môn học | Cấu trúc dữ liệu và Giải thuật (CTDL&GT) |
 | Ngôn ngữ | Tiếng Việt, có thuật ngữ kỹ thuật tiếng Anh |
-| Định dạng | PDF, DOCX, PPTX |
+| Định dạng corpus thực nghiệm | 5 file TXT do nhóm tự xây dựng, mỗi file tương ứng một chương |
 | Số tài liệu demo đã index | 5 |
 | Số chương | 5 |
 | Tổng số chunks trong lần smoke test | 14 |
@@ -441,7 +447,8 @@ Backend đọc Gemini key từ biến môi trường; tuyệt đối không ghi 
 - Mỗi câu gồm: ID, question, ground truth, chapter, evidence document/section, answerable và trạng thái review.
 - Câu answerable dùng để đo retrieval/generation.
 - Câu unanswerable dùng để đo refusal accuracy.
-- Ground truth cần được ít nhất một thành viên đọc và xác nhận thủ công.
+- Ground truth đã được Huỳnh Lê Bảo Trâm đối chiếu với 5 file corpus; 50/50 dòng
+  được chuyển sang trạng thái `APPROVED`.
 
 ## 6.3. Biến thực nghiệm
 
@@ -604,8 +611,8 @@ model này bị loại do thiếu API credit.
 - API quota/rate limit có thể ảnh hưởng latency và số mẫu RAGAS.
 - PhoBERT không phải sentence embedding model mặc định; pooling và word segmentation ảnh hưởng kết quả.
 - Cần tránh dùng cùng câu hỏi cho cả training và testing.
-- Ground truth hiện có reviewer/status là `Codex-draft`/`DRAFT`; cần con người
-  đọc tài liệu và duyệt lại trước khi dùng làm kết quả học thuật chính thức.
+- Test set hiện có reviewer `Huỳnh Lê Bảo Trâm` và status `APPROVED` sau khi đối
+  chiếu 45 câu answerable cùng evidence và 5 câu ngoài phạm vi với corpus.
 - Hit@5 bằng 1.0 ở mọi cấu hình cho thấy corpus/test set nhỏ làm metric bão hòa;
   MRR và nDCG@5 có giá trị phân biệt cao hơn.
 - Latency phụ thuộc mạng, quota Gemini, CPU/GPU và trạng thái warm-up; các duration
@@ -635,8 +642,8 @@ model này bị loại do thiếu API credit.
 
 Phân bố theo nội dung: Chương 1 có 8 câu, Chương 2 có 10, Chương 3 có 12,
 Chương 4 có 7, Chương 5 có 8 và ngoài phạm vi có 5. Mỗi dòng có question,
-ground truth, evidence document/section, question type và answerable flag. Hiện
-50 dòng vẫn mang trạng thái `DRAFT`, do đó cần human review trước khi nộp chính thức.
+ground truth, evidence document/section, question type và answerable flag. Cả
+50 dòng đã được rà soát và mang trạng thái `APPROVED`.
 Danh sách đầy đủ 50 test case và ground truth được bàn giao dưới dạng CSV tại
 `evaluation/test-set.csv` để có thể chạy tự động; báo cáo không lặp lại toàn bộ
 50 dòng nhằm tránh sai lệch giữa tài liệu và nguồn dữ liệu chuẩn.
@@ -833,11 +840,11 @@ LapTrinhJava/
 - [ ] Thêm Use Case Diagram.
 - [ ] Thêm Class Diagram.
 - [ ] Thêm ERD.
-- [ ] Rà soát lại Sequence Diagram theo source cuối.
-- [ ] Commit test set 50 câu và ground truth.
-- [ ] Điền các bảng kết quả benchmark bằng số liệu đã xác minh.
-- [ ] Chạy backend/frontend test trên máy nhóm.
-- [ ] Kiểm tra README và hướng dẫn cài đặt.
-- [ ] Kiểm tra không có API key/secret trong Git.
+- [x] Rà soát lại Sequence Diagram theo source cuối.
+- [x] Commit test set 50 câu và ground truth đã duyệt.
+- [x] Điền các bảng kết quả benchmark bằng số liệu đã xác minh.
+- [x] Chạy backend/frontend test trên máy nhóm.
+- [x] Kiểm tra README và hướng dẫn cài đặt.
+- [x] Kiểm tra không có API key/secret trong Git.
 - [ ] Chuẩn hóa tài liệu tham khảo.
 - [ ] Xuất báo cáo sang PDF và kiểm tra định dạng.

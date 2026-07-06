@@ -5,6 +5,10 @@ Generation)** và **mô hình fine-tuned** để trả lời câu hỏi dựa tr
 học tiếng Việt. Dự án đồng thời cung cấp module nghiên cứu nhằm so sánh độ chính
 xác, chi phí triển khai và khả năng cập nhật kiến thức của hai phương pháp.
 
+Đề tài do giảng viên hướng dẫn phân công. Nhóm sử dụng môn **Cấu trúc dữ liệu và
+Giải thuật (CTDL&GT)** làm miền demo và tự xây dựng corpus/test set nội bộ để
+triển khai thực nghiệm; đây không phải bộ tài liệu chính thức do giảng viên cung cấp.
+
 ## Mục lục
 
 - [Tính năng](#tính-năng)

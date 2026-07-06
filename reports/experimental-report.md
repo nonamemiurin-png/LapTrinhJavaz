@@ -12,7 +12,7 @@
 
 | Thành phần | Giá trị |
 |---|---|
-| Corpus | Cấu trúc dữ liệu và Giải thuật, version v1 |
+| Corpus | Cấu trúc dữ liệu và Giải thuật, version v1; 5 file TXT do nhóm tự xây dựng |
 | Test set | `evaluation/test-set.csv`, 50 câu |
 | Conditions chính | RAG, fine-tuned Qwen |
 | Chunking | fixed, semantic, hierarchical |
@@ -86,7 +86,7 @@ Trong ba model miễn phí đã đo, multilingual-e5-base phù hợp nhất cho 
 ## 5. Threats to validity
 
 - Không dùng cùng câu hỏi để vừa train vừa test.
-- Ground truth và citation cần được con người duyệt.
+- Test set 50 câu đã được Huỳnh Lê Bảo Trâm đối chiếu với corpus và chuyển sang `APPROVED`; citation sinh bởi hệ thống vẫn cần kiểm tra mẫu khi tái chạy benchmark.
 - Giữ nguyên generator/prompt khi so sánh chunking và embedding.
 - Chạy lặp ít nhất ba lần cho latency và báo lỗi/quota bị loại.
 
