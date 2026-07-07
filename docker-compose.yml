@@ -3,11 +3,12 @@ services:
   postgres:
     image: pgvector/pgvector:pg15
     environment:
-      POSTGRES_USER: tuong
-      POSTGRES_PASSWORD: hht9112006
+      POSTGRES_USER: tramhlb
+      POSTGRES_PASSWORD: 11022006
       POSTGRES_DB: vector_db
     ports:
       - "15432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
       - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init.sql
+

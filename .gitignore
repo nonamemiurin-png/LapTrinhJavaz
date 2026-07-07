@@ -34,6 +34,7 @@ logs/
 
 # Database volume and Local Dependencies
 data/postgres/
+data/postgres_old_tuong/
 backend/uploads/
 evaluation/runs/
 evaluation/.retrieval-env/

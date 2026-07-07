@@ -8,8 +8,8 @@ spring:
   # Database Configurations
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:15432/vector_db}
-    username: ${POSTGRES_USERNAME:tuong}
-    password: ${POSTGRES_PASSWORD:hht9112006}
+    username: ${POSTGRES_USERNAME:tramhlb}
+    password: ${POSTGRES_PASSWORD:11022006}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -49,3 +49,4 @@ app:
   finetuned:
     endpoint: ${FINE_TUNED_MODEL_ENDPOINT:}
     model: ${FINE_TUNED_MODEL_NAME:qwen2.5:0.5b}
+

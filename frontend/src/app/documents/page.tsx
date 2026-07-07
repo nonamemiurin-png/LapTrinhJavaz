@@ -73,7 +73,7 @@ export default function DocumentsPage() {
     <div className="max-w-6xl mx-auto h-full flex flex-col gap-8 pb-10">
       <header className="pt-4">
         <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Quản lý tài liệu môn học</h1>
-        <p className="text-slate-500 mt-2">Tải lên slide bài giảng, file PDF/DOCX để hệ thống tự động phân mảnh và Vector hóa.</p>
+        <p className="text-slate-500 mt-2">Tải lên slide bài giảng, file PDF/DOCX/PPTX/TXT để hệ thống tự động phân mảnh và Vector hóa.</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,14 +85,14 @@ export default function DocumentsPage() {
           </h2>
           <form onSubmit={handleUpload} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">File tài liệu (PDF, DOCX)</label>
+              <label className="block text-sm font-medium mb-1 text-slate-700 dark:text-slate-300">File tài liệu</label>
               <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer">
                 <input 
                   type="file" 
                   className="hidden" 
                   id="file-upload" 
                   onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  accept=".pdf,.docx,.pptx"
+                  accept=".pdf,.docx,.pptx,.txt"
                 />
                 <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center justify-center w-full h-full">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 mb-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -156,14 +156,14 @@ export default function DocumentsPage() {
           <h2 className="text-xl font-semibold mb-6">Tài liệu đã Index</h2>
           
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+            <table className="w-full table-fixed text-sm text-left text-slate-500 dark:text-slate-400">
               <thead className="text-xs text-slate-700 uppercase bg-slate-100/50 dark:bg-slate-700/50 rounded-lg">
                 <tr>
-                  <th className="px-6 py-3 rounded-l-lg">Tên file</th>
-                  <th className="px-6 py-3">Môn học</th>
-                  <th className="px-6 py-3">Chương</th>
-                  <th className="px-6 py-3">Trạng thái</th>
-                  <th className="px-6 py-3 rounded-r-lg">Ngày tải lên</th>
+                  <th className="w-[34%] px-4 py-3 rounded-l-lg">Tên file</th>
+                  <th className="w-[24%] px-4 py-3">Môn học</th>
+                  <th className="w-[18%] px-4 py-3">Chương</th>
+                  <th className="w-[12%] px-4 py-3">Trạng thái</th>
+                  <th className="w-[12%] px-4 py-3 rounded-r-lg">Ngày tải lên</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,21 +176,23 @@ export default function DocumentsPage() {
                 ) : (
                   documents.map((doc) => (
                     <tr key={doc.id} className="bg-transparent border-b border-slate-100 dark:border-slate-700/50 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                      <td className="px-6 py-4 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        {doc.filename}
+                      <td className="px-4 py-4 font-medium text-slate-900 dark:text-white">
+                        <div className="flex min-w-0 items-center gap-2" title={doc.filename}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-indigo-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          <span className="block min-w-0 truncate">{doc.filename}</span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4">{doc.subject}</td>
-                      <td className="px-6 py-4">{doc.chapter}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      <td className="px-4 py-4"><span className="block truncate" title={doc.subject}>{doc.subject}</span></td>
+                      <td className="px-4 py-4"><span className="block truncate" title={doc.chapter}>{doc.chapter}</span></td>
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex whitespace-nowrap px-2 py-1 rounded-full text-xs font-medium ${
                           doc.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' :
                           doc.status === 'PROCESSING' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
                         }`}>
                           {doc.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4">{new Date(doc.uploadedAt).toLocaleDateString('vi-VN')}</td>
+                      <td className="px-4 py-4 whitespace-nowrap">{new Date(doc.uploadedAt).toLocaleDateString('vi-VN')}</td>
                     </tr>
                   ))
                 )}

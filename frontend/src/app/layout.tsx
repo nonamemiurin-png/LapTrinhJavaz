@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className="overflow-hidden font-sans">
+      <body className="overflow-x-hidden font-sans">
         <SessionProviderWrapper>
           <Toaster position="top-right" />
           {children}
